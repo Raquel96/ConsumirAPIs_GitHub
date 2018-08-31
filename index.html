@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Consultas GitHub</title>
+  </head>
+  <body>
+    <div id="app">
+      <input type="text" v-model="username" placeholder="Escribe tu usuario de GitHub">
+      <ol>
+        <li v-for="repo in repos">{{repo.name}}</li>
+      </ol>
+    </div>
+      <script src="https://unpkg.com/vue"></script>
+      
+      <script>
+        function queryGitHubAPI(username){
+          return fetch(`http://api.github.com/users/${username}/repos`)
+                .then(response => response.json());
+        }
+          new Vue({
+            el:'#app',
+            data: {
+              username:'',
+              repos: []
+            },
+            watch: {
+              username: function(newValor, oldValor){
+                queryGitHubAPI(this.username).then(repos => {
+                  if(repos.length > 0 && repos[0].id)
+                  this.repos = repos;
+                });
+              }
+            }
+          })
+        </script>
+      </body>
+</html>
